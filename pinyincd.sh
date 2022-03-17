@@ -5,7 +5,7 @@ pycd() {
     if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
         "$pycd_basedir/rt/bin/python" "$pycd_basedir/pinyincd.py" --help
     else
-        selected="$("$pycd_basedir/rt/bin/python" pinyincd.py "$@" | fzf --exit-0 --select-1)"
+        selected="$("$pycd_basedir/rt/bin/python" "$pycd_basedir/pinyincd.py" "$@" | fzf --exit-0 --select-1)"
         if [ -z "$selected" ]; then
 			return 1
 		else
