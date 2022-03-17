@@ -115,7 +115,7 @@ def resolve(path, pinyin_firstletter: bool, prefix: bool):
 
 
 def make_parser():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog='pycd')
     parser.add_argument('-i', action='store_true', help='match first letters')
     parser.add_argument('-p', action='store_true', help='match prefix')
     parser.add_argument('pattern')
