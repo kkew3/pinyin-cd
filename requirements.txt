@@ -1,0 +1,5 @@
+# https://github.com/mozillazg/python-pinyin
+pypinyin
+
+ipython
+line_profiler
