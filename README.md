@@ -5,7 +5,17 @@
 
 # Installation
 
-Source `pinyincd.sh` by absolute path in `.bashrc` or `.zshrc`.
+```bash
+git clone https://github.com/kkew3/pinyin-cd.git
+cd pinyin-cd
+python3 -m virtualenv rt
+. rt/bin/activate
+pip install pypinyin
+```
+
+Then source `pinyincd.sh` by absolute path in `.bashrc` or `.zshrc`.
+
+Windows is not supported currently.
 
 
 # Usage
