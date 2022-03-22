@@ -11,6 +11,7 @@ cd pinyin-cd
 python3 -m virtualenv rt
 . rt/bin/activate
 pip install pypinyin
+deactivate
 ```
 
 Then source `pinyincd.sh` by absolute path in `.bashrc` or `.zshrc`.
