@@ -17,8 +17,8 @@ def to_pinyin(string, pinyin_style: pypinyin.Style):
     >>> to_pinyin('hello', pypinyin.Style.NORMAL)
     ['hello']
     """
-    return list(map(''.join, itertools.product(
-        *pypinyin.pinyin(list(string), style=pinyin_style, heteronym=True))))
+    return map(''.join, itertools.product(
+        *pypinyin.pinyin(list(string), style=pinyin_style, heteronym=True)))
 
 
 def get_first_split_pattern(path):
