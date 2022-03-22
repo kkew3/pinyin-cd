@@ -76,7 +76,7 @@ def resolve(path, pinyin_firstletter: bool, prefix: bool):
     Returns the target directory.
     """
     if not path:
-        return os.path.expanduser('~')
+        return [os.path.expanduser('~')]
     path = os.path.normpath(path)
 
     pinyin_style = (pypinyin.Style.FIRST_LETTER if pinyin_firstletter
@@ -118,7 +118,7 @@ def make_parser():
     parser = argparse.ArgumentParser(prog='pycd')
     parser.add_argument('-i', action='store_true', help='match first letters')
     parser.add_argument('-p', action='store_true', help='match prefix')
-    parser.add_argument('pattern')
+    parser.add_argument('pattern', nargs='?', const='')
     return parser
 
 
