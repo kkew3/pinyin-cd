@@ -14,7 +14,7 @@ if sys.platform == 'win32':
 
 def to_pinyin(string, pinyin_style: pypinyin.Style):
     """
-    >>> to_pinyin('hello', pypinyin.Style.NORMAL)
+    >>> list(to_pinyin('hello', pypinyin.Style.NORMAL))
     ['hello']
     """
     return map(''.join, itertools.product(
