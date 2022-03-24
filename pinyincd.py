@@ -114,16 +114,23 @@ def resolve(path, pinyin_firstletter: bool, prefix: bool):
     return matched_directories
 
 
-def make_parser():
-    parser = argparse.ArgumentParser(prog='pycd')
-    parser.add_argument('-i', action='store_true', help='match first letters')
-    parser.add_argument('-p', action='store_true', help='match prefix')
-    parser.add_argument('pattern', nargs='?', const='')
-    return parser
+class Args:
+    def __init__(self):
+        self.i = False
+        self.p = False
+        self.pattern = ''
+
+
+def parse_args():
+    args = Args()
+    args.i = bool(sys.argv[1])
+    args.p = bool(sys.argv[2])
+    args.pattern = sys.argv[3]
+    return args
 
 
 def main():
-    args = make_parser().parse_args()
+    args = parse_args()
     for match in resolve(args.pattern, args.i, args.p):
         print(match)
 
