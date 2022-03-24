@@ -1,5 +1,5 @@
 __pycd_usage() {
-	echo "usage: pycd [OPTIONS..] PATTERN"
+	echo "usage: pycd [OPTIONS..] [PATTERN]"
 	echo
 	echo "OPTIONS"
 	echo "  --       mark the end of OPTIONS"
