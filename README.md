@@ -19,6 +19,19 @@ Then source `pinyincd.sh` by absolute path in `.bashrc` or `.zshrc`.
 Windows is not supported currently.
 
 
+# Alternative Rust Installation
+
+```bash
+git clone https://github.com/kkew3/pinyin-cd.git
+cd pinyin-cd/pinyincd_rust_backend
+cargo build --release
+```
+
+Then source `pinyincd_rust.sh` by absolute path in `.bashrc` or `.zshrc`.
+
+Rust version is about 10x faster than Python version.
+
+
 # Usage
 
 - `pycd DIR`: replace each zh-hans character with the pinyin without tones
