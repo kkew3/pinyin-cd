@@ -102,7 +102,7 @@ fn to_pinyin(string: &str, style: &PinyinStyle) -> Vec<String> {
                             PinyinStyle::Plain => pinyin.plain(),
                             PinyinStyle::FirstLetter => pinyin.first_letter(),
                         }
-                    ));
+                    ).replace("ü", "v"));
                 }
             }
             None => {
@@ -459,9 +459,8 @@ mod tests {
         let result = resolve(&p, false, false);
         assert_eq!(result, vec![PathBuf::from("../pinyincd_rust_backend/test/威妥玛拼音")]);
 
-        // It seems that '略' is not supported to be shown as "lve" currently
-        // let p = PathBuf::from("test/weituomapinyin/zhanlve");
-        // let result = resolve(&p, false, false);
-        // assert_eq!(result, vec![PathBuf::from("./test/威妥玛拼音/战略")]);
+        let p = PathBuf::from("test/weituomapinyin/zhanlve");
+        let result = resolve(&p, false, false);
+        assert_eq!(result, vec![PathBuf::from("./test/威妥玛拼音/战略")]);
     }
 }
