@@ -58,7 +58,3 @@ pycd() {
 		fi
 	fi
 }
-
-pyexpand() {
-	pycd -l "$@"
-}
