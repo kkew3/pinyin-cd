@@ -2,7 +2,9 @@ import os
 import sys
 import itertools
 import collections
-import argparse
+import pathlib
+import posixpath
+import ntpath
 
 import pypinyin
 
@@ -21,53 +23,134 @@ def to_pinyin(string, pinyin_style: pypinyin.Style):
         *pypinyin.pinyin(list(string), style=pinyin_style, heteronym=True)))
 
 
-def get_first_split_pattern(path):
+# Reference: https://www.oreilly.com/library/view/python-cookbook/0596001673/ch04s16.html
+def _path_components(path, _pathmodule=None):
     """
     :param path: normalized path
 
-    >>> get_first_split_pattern('../../hello/world')
-    ('../..', ('hello', 'world'))
-    >>> get_first_split_pattern('hello/world/again')
-    ('.', ('hello', 'world', 'again'))
-    >>> get_first_split_pattern('../hello')
-    ('..', ('hello',))
-    >>> get_first_split_pattern('../..')
-    ('../..', ())
-    >>> get_first_split_pattern('hello')
-    ('.', ('hello',))
-    >>> get_first_split_pattern('/')
-    ('/', ())
-    >>> get_first_split_pattern('/hello')
-    ('/', ('hello',))
-    >>> get_first_split_pattern('.')
-    ('.', ())
-
-    TODO not supporting win32 absolute path
+    >>> import posixpath
+    >>> _path_components('../../hello/world', posixpath)
+    ['..', '..', 'hello', 'world']
+    >>> _path_components('hello/world/again', posixpath)
+    ['hello', 'world', 'again']
+    >>> _path_components('../hello', posixpath)
+    ['..', 'hello']
+    >>> _path_components('../..', posixpath)
+    ['..', '..']
+    >>> _path_components('hello', posixpath)
+    ['hello']
+    >>> _path_components('/', posixpath)
+    ['/']
+    >>> _path_components('/hello', posixpath)
+    ['/', 'hello']
+    >>> _path_components('.', posixpath)
+    ['.']
+    >>> _path_components('./hello', posixpath)
+    ['.', 'hello']
+    >>> import ntpath
+    >>> _path_components('.', ntpath)
+    ['.']
+    >>> _path_components('C:', ntpath)
+    ['C:']
+    >>> _path_components('C:\\\\', ntpath)
+    ['C:\\\\']
+    >>> _path_components('C:\\\\hello', ntpath)
+    ['C:\\\\', 'hello']
+    >>> _path_components('hello\\\\world', ntpath)
+    ['hello', 'world']
     """
-    assert path
+    pathmodule = _pathmodule or os.path
+    # os.path is either posixpath or ntpath
+    if pathmodule not in (posixpath, ntpath):
+        raise ValueError('invalid pathmodule {!r}'.format(pathmodule))
+
+    components = []
+    while True:
+        parts = pathmodule.split(path)
+        # sentinel for absolute paths
+        if parts[0] == path:
+            components.append(parts[0])
+            break
+        # sentinel for relative paths
+        if parts[1] == path:
+            components.append(parts[1])
+            break
+        path = parts[0]
+        components.append(parts[1])
+    components.reverse()
+    return components
+
+
+def get_first_split_pattern(path, _pathmodule=None):
+    """
+    :param path: normalized path
+
+    >>> import posixpath
+    >>> get_first_split_pattern('../../hello/world', posixpath)
+    ('../..', ('hello', 'world'))
+    >>> get_first_split_pattern('hello/world/again', posixpath)
+    ('.', ('hello', 'world', 'again'))
+    >>> get_first_split_pattern('../hello', posixpath)
+    ('..', ('hello',))
+    >>> get_first_split_pattern('../..', posixpath)
+    ('../..', ())
+    >>> get_first_split_pattern('hello', posixpath)
+    ('.', ('hello',))
+    >>> get_first_split_pattern('/', posixpath)
+    ('/', ())
+    >>> get_first_split_pattern('/hello', posixpath)
+    ('/', ('hello',))
+    >>> get_first_split_pattern('.', posixpath)
+    ('.', ())
+    >>> import ntpath
+    >>> get_first_split_pattern('.', ntpath)
+    ('.', ())
+    >>> get_first_split_pattern('C:', ntpath)
+    ('C:', ())
+    >>> get_first_split_pattern('C:\\\\', ntpath)
+    ('C:\\\\', ())
+    >>> get_first_split_pattern('C:hello', ntpath)
+    ('C:', ('hello',))
+    >>> get_first_split_pattern('C:\\\\hello', ntpath)
+    ('C:\\\\', ('hello',))
+    >>> get_first_split_pattern('C:\\\\hello\\\\world', ntpath)
+    ('C:\\\\', ('hello', 'world'))
+    >>> get_first_split_pattern('hello', ntpath)
+    ('.', ('hello',))
+    >>> get_first_split_pattern('hello\\\\world', ntpath)
+    ('.', ('hello', 'world'))
+    """
+    if not path:
+        raise ValueError('path must not be empty')
+
+    pathmodule = _pathmodule or os.path
+    # os.path is either posixpath or ntpath
+    if pathmodule not in (posixpath, ntpath):
+        raise ValueError('invalid pathmodule {!r}'.format(pathmodule))
+
+    anchor = {
+        posixpath: pathlib.PurePosixPath,
+        ntpath: pathlib.PureWindowsPath,
+    }[pathmodule](path).anchor
 
     basedir = []
     pattern = []
     in_basedir = True
-    for component in path.split(os.path.sep):
+    for component in _path_components(path, _pathmodule):
         if in_basedir:
-            if not component:
-                basedir.append(os.path.sep)
-                in_basedir = False
+            if component in (anchor, os.pardir):
+                basedir.append(component)
             elif component == os.curdir:
                 basedir.append(component)
                 in_basedir = False
-            elif component == os.pardir:
-                basedir.append(component)
             else:
                 in_basedir = False
                 pattern.append(component)
         else:
-            if component:
-                pattern.append(component)
+            pattern.append(component)
     if not basedir:
         basedir.append(os.curdir)
-    basedir = os.path.join(*basedir)
+    basedir = pathmodule.join(*basedir)
     return basedir, tuple(pattern)
 
 

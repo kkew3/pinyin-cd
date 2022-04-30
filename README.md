@@ -16,8 +16,6 @@ deactivate
 
 Then source `pinyincd.sh` by absolute path in `.bashrc` or `.zshrc`.
 
-Windows is not supported currently.
-
 
 # Alternative Rust Installation
 
