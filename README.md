@@ -5,6 +5,8 @@
 
 # Installation
 
+## Python backend
+
 ```bash
 git clone https://github.com/kkew3/pinyin-cd.git
 cd pinyin-cd
@@ -18,7 +20,7 @@ deactivate
 Then source `pinyincd.sh` by absolute path in `.bashrc` or `.zshrc`.
 
 
-# Alternative Rust Installation
+## Alternative Rust backend
 
 ```bash
 git clone https://github.com/kkew3/pinyin-cd.git
