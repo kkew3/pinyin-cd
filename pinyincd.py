@@ -9,11 +9,6 @@ import ntpath
 import pypinyin
 
 
-if sys.platform == 'win32':
-    print('win32 not supported currently', file=sys.stderr)
-    sys.exit(1)
-
-
 def to_pinyin(string, pinyin_style: pypinyin.Style):
     """
     >>> list(to_pinyin('hello', pypinyin.Style.NORMAL))
