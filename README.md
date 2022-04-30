@@ -11,6 +11,7 @@ cd pinyin-cd
 python3 -m virtualenv rt
 . rt/bin/activate
 pip install pypinyin
+python -m doctest pinyincd.py
 deactivate
 ```
 
@@ -22,6 +23,7 @@ Then source `pinyincd.sh` by absolute path in `.bashrc` or `.zshrc`.
 ```bash
 git clone https://github.com/kkew3/pinyin-cd.git
 cd pinyin-cd/pinyincd_rust_backend
+cargo test
 cargo build --release
 ```
 
